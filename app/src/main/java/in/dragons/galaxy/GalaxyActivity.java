@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -20,11 +21,12 @@ import android.view.View;
 
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.NavigationViewMode;
+import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.percolate.caffeine.ViewUtils;
 
 import in.dragons.galaxy.fragment.FilterMenu;
 
-public abstract class GalaxyActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public abstract class GalaxyActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private NavigationView navigationView;
     DrawerLayout drawer;
@@ -173,21 +175,40 @@ public abstract class GalaxyActivity extends BaseActivity implements NavigationV
                 startActivity(new Intent(this, PreferenceActivity.class));
                 break;
             case R.id.action_spoofed:
-                startActivity(new Intent(this, DeviceActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new SpoofFragment()).commit();
                 break;
             case R.id.action_accounts:
-                startActivity(new Intent(this, AccountsActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new AccountsFragment()).commit();
                 break;
             case R.id.action_themes:
-                startActivity(new Intent(this, ThemesActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new ThemesFragment()).commit();
                 break;
             case R.id.action_about:
-                startActivity(new Intent(this, AboutActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new AboutFragment()).commit();
                 break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onColorSelection(@NonNull ColorChooserDialog dialog, int selectedColor) {
+        if (dialog.isAccentMode()) {
+            Aesthetic.get().colorAccent(selectedColor);
+        } else {
+            Aesthetic.get()
+                    .colorPrimary(selectedColor)
+                    .colorStatusBarAuto()
+                    .colorNavigationBarAuto()
+                    .navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+                    .apply();
+        }
+    }
+
+    @Override
+    public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
+
     }
 }
