@@ -1,7 +1,10 @@
 package in.dragons.galaxy;
 
+import android.app.Fragment;
 import android.content.Context;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.aesthetic.Aesthetic;
+import com.percolate.caffeine.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,7 +25,6 @@ public class AllCategoriesAdapter extends RecyclerView.Adapter<AllCategoriesAdap
     private Map<String, String> categories;
 
     private Integer[] categoriesImg = {
-            R.drawable.ic_android_wear,
             R.drawable.ic_art_design,
             R.drawable.ic_auto_vehicles,
             R.drawable.ic_beauty,
@@ -55,6 +58,7 @@ public class AllCategoriesAdapter extends RecyclerView.Adapter<AllCategoriesAdap
             R.drawable.ic_tools,
             R.drawable.ic_travel_local,
             R.drawable.ic_video_editors,
+            R.drawable.ic_android_wear,
             R.drawable.ic_weather,
     };
 
@@ -68,41 +72,42 @@ public class AllCategoriesAdapter extends RecyclerView.Adapter<AllCategoriesAdap
         translator = new SharedPreferencesTranslator(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView topLabel;
-        public ImageView topImage;
-        public LinearLayout topContainer;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView topLabel;
+        ImageView topImage;
+        LinearLayout topContainer;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
-            topLabel = (TextView) v.findViewById(R.id.top_cat_name);
-            topImage = (ImageView) v.findViewById(R.id.top_cat_img);
-            topContainer = (LinearLayout) v.findViewById(R.id.all_cat_container);
+            topLabel = ViewUtils.findViewById(v, R.id.top_cat_name);
+            topImage = ViewUtils.findViewById(v, R.id.top_cat_img);
+            topContainer = ViewUtils.findViewById(v, R.id.all_cat_container);
         }
     }
 
+    @NonNull
     @Override
-    public AllCategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AllCategoriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         view = LayoutInflater.from(context).inflate(R.layout.all_cat_item, parent, false);
         viewHolder = new ViewHolder(view);
         Aesthetic.get()
                 .colorAccent()
                 .take(1)
-                .subscribe(color -> {
-                    viewHolder.topImage.setColorFilter(color);
-                });
+                .subscribe(color -> viewHolder.topImage.setColorFilter(color));
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.topLabel.setText(translator.getString(new ArrayList<>(categories.keySet()).get(position)));
-        holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[position]));
-        holder.topContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategoryAppsActivity.start(context, new ArrayList<>(categories.keySet()).get(position));
-            }
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        holder.topLabel.setText(translator.getString(new ArrayList<>(categories.keySet()).get(holder.getAdapterPosition())));
+        holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[holder.getAdapterPosition()]));
+        holder.topContainer.setOnClickListener(v -> {
+            GalaxyActivity activity = (GalaxyActivity) view.getContext();
+            Fragment myFragment = new EndlessScrollFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString("CategoryID", new ArrayList<>(categories.keySet()).get(holder.getAdapterPosition()));
+            myFragment.setArguments(arguments);
+            activity.getFragmentManager().beginTransaction().replace(R.id.content_frame, myFragment, "BAZINGA").addToBackStack(null).commit();
         });
     }
 

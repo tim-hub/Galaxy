@@ -71,7 +71,6 @@ public class DeviceActivity extends GalaxyActivity {
         setText(R.id.device_cpu, R.string.device_cpu, Platforms.substring(0, Platforms.indexOf(',')));
     }
 
-
     public void setFab() {
         FloatingActionButton changeDevice = (FloatingActionButton) findViewById(R.id.fab);
         changeDevice.setVisibility(View.VISIBLE);

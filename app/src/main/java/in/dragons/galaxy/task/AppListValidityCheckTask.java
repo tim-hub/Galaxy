@@ -37,7 +37,7 @@ public class AppListValidityCheckTask extends AsyncTask<String, Void, Set<String
         Set<String> newPackageNames = new HashSet<>(installedPackageNames);
         newPackageNames.removeAll(activity.getListedPackageNames());
         if (!respectUpdateBlacklist && newPackageNames.size() > 0) {
-            activity.loadApps();
+            activity.loadInstalledApps();
             return;
         }
         Set<String> removedPackageNames = new HashSet<>(activity.getListedPackageNames());

@@ -41,8 +41,9 @@ public class InstalledAppsFragment extends AppListFragment {
 
         v = inflater.inflate(R.layout.app_installed_inc, container, false);
 
-        setupList(v, R.layout.two_line_list_item_with_icon);
+        setupListView(v, R.layout.two_line_list_item_with_icon);
 
+        clearApps();
         loadApps();
 
         getListView().setOnItemClickListener((parent, view, position, id) -> {
@@ -59,18 +60,6 @@ public class InstalledAppsFragment extends AppListFragment {
         AppListValidityCheckTask task = new AppListValidityCheckTask((GalaxyActivity) this.getActivity());
         task.setIncludeSystemApps(new FilterMenu((GalaxyActivity) this.getActivity()).getFilterPreferences().isSystemApps());
         task.execute();
-    }
-
-    public void setupList(View v, int layoutId) {
-        View emptyView = v.findViewById(android.R.id.empty);
-        listView = ViewUtils.findViewById(v, android.R.id.list);
-        listView.setNestedScrollingEnabled(true);
-        if (emptyView != null) {
-            listView.setEmptyView(emptyView);
-        }
-        if (null == listView.getAdapter()) {
-            listView.setAdapter(new AppListAdapter(getActivity(), layoutId));
-        }
     }
 
     @Override

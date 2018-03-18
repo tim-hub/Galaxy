@@ -5,8 +5,10 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -28,6 +30,7 @@ abstract public class AppListFragment extends Fragment {
 
     protected ListView listView;
     protected Map<String, ListItem> listItems = new HashMap<>();
+    protected View v;
 
     abstract public void loadApps();
 
@@ -36,6 +39,11 @@ abstract public class AppListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -79,15 +87,15 @@ abstract public class AppListFragment extends Fragment {
         }
     }
 
-    public void onContentChange() {
-        View emptyView = getActivity().findViewById(android.R.id.empty);
-        listView = ViewUtils.findViewById(this.getActivity(), android.R.id.list);
+    public void setupListView(View v, int layoutId) {
+        View emptyView = v.findViewById(android.R.id.empty);
+        listView = ViewUtils.findViewById(v, android.R.id.list);
         listView.setNestedScrollingEnabled(true);
         if (emptyView != null) {
             listView.setEmptyView(emptyView);
         }
         if (null == listView.getAdapter()) {
-            listView.setAdapter(new AppListAdapter(this.getActivity(), R.layout.two_line_list_item_with_icon));
+            listView.setAdapter(new AppListAdapter(getActivity(), layoutId));
         }
     }
 

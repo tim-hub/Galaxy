@@ -35,13 +35,12 @@ abstract public class AppListActivity extends GalaxyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
-        getLayoutInflater().inflate(R.layout.app_updatable_inc, contentFrameLayout);
+        getLayoutInflater().inflate(R.layout.app_endless_inc, contentFrameLayout);
 
         onContentChange();
 
         getListView().setOnItemClickListener((parent, view, position, id) -> {
-            DetailsActivity.app = getAppByListPosition(position);
-            startActivity(DetailsActivity.getDetailsIntent(AppListActivity.this, DetailsActivity.app.getPackageName()));
+            grabDetails(position);
         });
         registerForContextMenu(getListView());
     }
@@ -87,6 +86,14 @@ abstract public class AppListActivity extends GalaxyActivity {
         }
     }
 
+    public void grabDetails(int position) {
+        DetailsFragment.app = getAppByListPosition(position);
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString("PackageName", DetailsFragment.app.getPackageName());
+        detailsFragment.setArguments(arguments);
+        getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, detailsFragment).commit();
+    }
 
     public void onContentChange() {
         View emptyView = findViewById(android.R.id.empty);

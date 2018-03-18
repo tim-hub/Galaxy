@@ -26,12 +26,17 @@ import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.percolate.caffeine.ViewUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import in.dragons.galaxy.fragment.FilterMenu;
 import in.dragons.galaxy.model.App;
+import in.dragons.galaxy.task.playstore.CategoryAppsTaskHelper;
+import in.dragons.galaxy.task.playstore.EndlessScrollTaskHelper;
 import in.dragons.galaxy.view.ListItem;
+import in.dragons.galaxy.view.ProgressIndicator;
+import in.dragons.galaxy.view.SearchResultAppBadge;
 
 public class GalaxyActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
@@ -41,9 +46,8 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
     private Toolbar toolbar;
     private SearchView mSearchView;
 
-    protected ListView listView;
-    protected ListItem listItem;
     protected Map<String, ListItem> listItems = new HashMap<>();
+    protected AppListIterator iterator;
 
     static public App app;
 
@@ -176,29 +180,64 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
         return listItems.keySet();
     }
 
-    public void removeApp(String packageName) {
-        ((AppListAdapter) getListView().getAdapter()).remove(listItems.get(packageName));
-        listItems.remove(packageName);
-    }
-
-    public void loadApps() {
-    }
-
-
-    public void redrawDetails(App app){
-
-    }
-
-    protected ListItem getListItem(App app) {
-        return listItem;
+    public void redrawDetails(App app) {
     }
 
     public ListView getListView() {
-        return listView;
+        return (ListView) this.getFragmentManager().findFragmentById(R.id.content_frame).getView().findViewById(android.R.id.list);
+    }
+
+    public void setIterator(AppListIterator iterator) {
+        SearchFragment searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag("SEARCH");
+        if (searchFragment != null && searchFragment.isVisible()) {
+            searchFragment = (SearchFragment) getFragmentManager().findFragmentById(R.id.content_frame);
+            searchFragment.setIterator(iterator);
+        } else {
+            EndlessScrollFragment endlessScrollFragment = (EndlessScrollFragment) getFragmentManager().findFragmentById(R.id.content_frame);
+            endlessScrollFragment.setIterator(iterator);
+        }
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    protected ListItem getListItem(App app) {
+        SearchResultAppBadge appBadge = new SearchResultAppBadge();
+        appBadge.setApp(app);
+        return appBadge;
+    }
+
+    @Override
+    protected EndlessScrollTaskHelper getTasks() {
+        CategoryAppsTaskHelper task = new CategoryAppsTaskHelper(iterator);
+        return task;
+    }
+
+    @Override
+    public void addApps(List<App> appsToAdd) {
+        AppListAdapter adapter = (AppListAdapter) getListView().getAdapter();
+        if (!adapter.isEmpty()) {
+            ListItem last = adapter.getItem(adapter.getCount() - 1);
+            if (last instanceof ProgressIndicator) {
+                adapter.remove(last);
+            }
+        }
+        super.addApps(appsToAdd, false);
+        if (!appsToAdd.isEmpty()) {
+            adapter.add(new ProgressIndicator());
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void clearApps() {
+        super.clearApps();
+        iterator = null;
+    }
+
+    public void loadInstalledApps() {
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_myapps:
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new InstalledAppsFragment()).commit();
@@ -207,7 +246,7 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new UpdatableAppsFragment()).commit();
                 break;
             case R.id.action_categories:
-                startActivity(new Intent(this, CategoryListActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new CategoryListFragment()).commit();
                 break;
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferenceActivity.class));
@@ -226,7 +265,7 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = ViewUtils.findViewById(this, R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -247,6 +286,5 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
 
     @Override
     public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
-
     }
 }

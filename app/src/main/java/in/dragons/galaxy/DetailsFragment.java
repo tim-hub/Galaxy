@@ -31,7 +31,10 @@ public class DetailsFragment extends Fragment {
 
     static private final String INTENT_PACKAGE_NAME = "INTENT_PACKAGE_NAME";
 
-    static public App app;
+    protected View v;
+    protected DownloadOrInstall downloadOrInstallFragment;
+
+    public static App app;
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,16 +49,11 @@ public class DetailsFragment extends Fragment {
         return intent;
     }
 
-    protected View v;
-
-    protected DownloadOrInstall downloadOrInstallFragment;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.details_activity_layout, container, false);
         return v;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

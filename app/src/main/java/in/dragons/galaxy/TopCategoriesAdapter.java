@@ -1,7 +1,10 @@
 package in.dragons.galaxy;
 
+import android.app.Fragment;
 import android.content.Context;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.aesthetic.Aesthetic;
+import com.percolate.caffeine.ViewUtils;
 
 public class TopCategoriesAdapter extends RecyclerView.Adapter<TopCategoriesAdapter.ViewHolder> {
 
@@ -26,48 +30,49 @@ public class TopCategoriesAdapter extends RecyclerView.Adapter<TopCategoriesAdap
             R.drawable.ic_communication
     };
 
+    private View view;
     private SharedPreferencesTranslator translator;
 
-    public TopCategoriesAdapter(Context context, String[] topCategories) {
+    TopCategoriesAdapter(Context context, String[] topCategories) {
         this.categories = topCategories;
         this.context = context;
         this.translator = new SharedPreferencesTranslator(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView topLabel;
-        public ImageView topImage;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView topLabel;
+        ImageView topImage;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
-            topLabel = (TextView) v.findViewById(R.id.top_cat_name);
-            topImage = (ImageView) v.findViewById(R.id.top_cat_img);
+            topLabel = ViewUtils.findViewById(v, R.id.top_cat_name);
+            topImage = ViewUtils.findViewById(v, R.id.top_cat_img);
 
             Aesthetic.get()
                     .colorAccent()
                     .take(1)
-                    .subscribe(color -> {
-                        topImage.setColorFilter(color);
-                    });
+                    .subscribe(color -> topImage.setColorFilter(color));
         }
     }
 
+    @NonNull
     @Override
-    public TopCategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.top_cat_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+    public TopCategoriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        view = LayoutInflater.from(context).inflate(R.layout.top_cat_item, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.topLabel.setText(translator.getString(categories[position]));
-        holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[position]));
-        holder.topImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategoryAppsActivity.start(context, categories[position]);
-            }
+        holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[holder.getAdapterPosition()]));
+        holder.topImage.setOnClickListener(v -> {
+            GalaxyActivity activity = (GalaxyActivity) view.getContext();
+            Fragment myFragment = new EndlessScrollFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString("CategoryID", categories[holder.getAdapterPosition()]);
+            myFragment.setArguments(arguments);
+            activity.getFragmentManager().beginTransaction().replace(R.id.content_frame, myFragment, "BAZINGA").addToBackStack(null).commit();
         });
     }
 

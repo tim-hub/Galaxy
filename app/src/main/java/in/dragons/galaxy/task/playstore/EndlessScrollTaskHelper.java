@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.dragons.galaxy.AppListIterator;
-import in.dragons.galaxy.EndlessScrollActivity;
+import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.PlayStoreApiAuthenticator;
 import in.dragons.galaxy.PreferenceActivity;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.model.Filter;
 
-abstract public class EndlessScrollTask extends PlayStorePayloadTask<List<App>> {
+abstract public class EndlessScrollTaskHelper extends PlayStorePayloadTask<List<App>> {
 
     protected Filter filter;
     protected AppListIterator iterator;
@@ -29,7 +29,7 @@ abstract public class EndlessScrollTask extends PlayStorePayloadTask<List<App>> 
         this.filter = filter;
     }
 
-    EndlessScrollTask(AppListIterator iterator) {
+    EndlessScrollTaskHelper(AppListIterator iterator) {
         this.iterator = iterator;
     }
 
@@ -77,7 +77,7 @@ abstract public class EndlessScrollTask extends PlayStorePayloadTask<List<App>> 
 
     @Override
     protected void onPostExecute(List<App> apps) {
-        EndlessScrollActivity activity = (EndlessScrollActivity) context;
+        GalaxyActivity activity = (GalaxyActivity) context;
         if (null == apps) {
             apps = new ArrayList<>();
         }

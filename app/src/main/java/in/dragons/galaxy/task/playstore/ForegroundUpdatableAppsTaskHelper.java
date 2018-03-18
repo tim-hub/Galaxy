@@ -14,9 +14,7 @@ import java.util.List;
 
 import in.dragons.galaxy.BlackWhiteListManager;
 import in.dragons.galaxy.BuildConfig;
-import in.dragons.galaxy.GalaxyPermissionManager;
 import in.dragons.galaxy.R;
-import in.dragons.galaxy.UpdatableAppsActivity;
 import in.dragons.galaxy.UpdatableAppsFragment;
 import in.dragons.galaxy.model.App;
 
@@ -63,55 +61,37 @@ public class ForegroundUpdatableAppsTaskHelper extends UpdatableAppsTask impleme
         super.onPostExecute(result);
         activity.clearApps();
         activity.addApps(updatableApps);
-        if (success() && updatableApps.isEmpty()) {
-            activity.getActivity().findViewById(R.id.unicorn).setVisibility(View.VISIBLE);
-            activity.getActivity().findViewById(R.id.update_card).setVisibility(View.GONE);
-        }
 
-        setText(R.id.updates_txt,R.string.list_update_all_txt,updatableApps.size());
-        toggleUpdateAll(!updatableApps.isEmpty());
+        if (success() && updatableApps.isEmpty())
+            activity.getActivity().findViewById(R.id.unicorn).setVisibility(View.VISIBLE);
+        else {
+            setText(R.id.updates_txt, R.string.list_update_all_txt, updatableApps.size());
+            //setupButtons();
+        }
     }
 
-    private void toggleUpdateAll(boolean enable) {
+    private void setupButtons() {
         update = (Button) activity.getActivity().findViewById(R.id.update_all);
         cancel = (Button) activity.getActivity().findViewById(R.id.update_cancel);
-        textView = (TextView) activity.getActivity().findViewById(R.id.updates_txt);
 
-        if (enable) {
-            activity.getActivity().findViewById(R.id.update_card).setVisibility(View.VISIBLE);
-            update.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.VISIBLE);
-        }
-
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GalaxyPermissionManager permissionManager = new GalaxyPermissionManager(activity.getActivity());
-                if (permissionManager.checkPermission()) {
-                    activity.launchUpdateAll();
-                    update.setVisibility(View.GONE);
-                    cancel.setVisibility(View.VISIBLE);
-                    textView.setText(R.string.list_updating);
-                } else {
-                    permissionManager.requestPermission();
-                }
-            }
+        update.setOnClickListener(v -> {
+            activity.launchUpdateAll();
+            update.setVisibility(View.GONE);
+            cancel.setVisibility(View.VISIBLE);
+            textView.setText(R.string.list_updating);
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                query = new DownloadManager.Query();
-                query.setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
-                dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-                Cursor c = dm.query(query);
-                while (c.moveToNext() == true) {
-                    dm.remove(c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID)));
-                }
-                update.setVisibility(View.VISIBLE);
-                cancel.setVisibility(View.GONE);
-                setText(R.id.updates_txt,R.string.list_update_all_txt,updatableApps.size());
+        cancel.setOnClickListener(v -> {
+            query = new DownloadManager.Query();
+            query.setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
+            dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+            Cursor c = dm.query(query);
+            while (c.moveToNext() == true) {
+                dm.remove(c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID)));
             }
+            update.setVisibility(View.VISIBLE);
+            cancel.setVisibility(View.GONE);
+            setText(R.id.updates_txt, R.string.list_update_all_txt, updatableApps.size());
         });
     }
 

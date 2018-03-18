@@ -8,14 +8,14 @@ import com.percolate.caffeine.ViewUtils;
 import java.util.Map;
 
 import in.dragons.galaxy.AllCategoriesAdapter;
-import in.dragons.galaxy.CategoryListActivity;
+import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.R;
 
-public class CategoryListTask extends CategoryTask implements CloneableTask {
+public class CategoryListTaskHelper extends CategoryTask implements CloneableTask {
 
     @Override
     public CloneableTask clone() {
-        CategoryListTask task = new CategoryListTask();
+        CategoryListTaskHelper task = new CategoryListTaskHelper();
         task.setManager(manager);
         task.setErrorView(errorView);
         task.setContext(context);
@@ -25,7 +25,7 @@ public class CategoryListTask extends CategoryTask implements CloneableTask {
 
     @Override
     protected void fill() {
-        final CategoryListActivity activity = (CategoryListActivity) context;
+        final GalaxyActivity activity = (GalaxyActivity) context;
         final Map<String, String> categories = manager.getCategoriesFromSharedPreferences();
 
         RecyclerView recyclerView = ViewUtils.findViewById(activity, R.id.all_cat_view);
@@ -44,6 +44,5 @@ public class CategoryListTask extends CategoryTask implements CloneableTask {
             }
         });
         recyclerView.setAdapter(rva);
-        activity.setupTopCategories();
     }
 }

@@ -13,11 +13,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.percolate.caffeine.ViewUtils;
-
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.task.AppListValidityCheckTask;
-import in.dragons.galaxy.task.playstore.ForegroundUpdatableAppsTask;
 import in.dragons.galaxy.task.playstore.ForegroundUpdatableAppsTaskHelper;
 import in.dragons.galaxy.view.ListItem;
 import in.dragons.galaxy.view.UpdatableAppBadge;
@@ -25,7 +22,6 @@ import in.dragons.galaxy.view.UpdatableAppBadge;
 public class UpdatableAppsFragment extends AppListFragment {
 
     private UpdateAllReceiver updateAllReceiver;
-    private SharedPreferences sharedPreferences;
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,7 +42,7 @@ public class UpdatableAppsFragment extends AppListFragment {
 
         v = inflater.inflate(R.layout.app_updatable_inc, container, false);
 
-        setupList(v, R.layout.two_line_list_item_with_icon);
+        setupListView(v, R.layout.two_line_list_item_with_icon);
 
         loadApps();
 
@@ -56,24 +52,12 @@ public class UpdatableAppsFragment extends AppListFragment {
 
         registerForContextMenu(getListView());
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         TextView delta = (TextView) v.findViewById(R.id.updates_setting);
         delta.setText(sharedPreferences.getBoolean("PREFERENCE_DOWNLOAD_DELTAS", true) ? R.string.delta_enabled : R.string.delta_disabled);
         delta.setVisibility(View.VISIBLE);
         return v;
-    }
-
-    public void setupList(View v, int layoutId) {
-        View emptyView = v.findViewById(android.R.id.empty);
-        listView = ViewUtils.findViewById(v, android.R.id.list);
-        listView.setNestedScrollingEnabled(true);
-        if (emptyView != null) {
-            listView.setEmptyView(emptyView);
-        }
-        if (null == listView.getAdapter()) {
-            listView.setAdapter(new AppListAdapter(getActivity(), layoutId));
-        }
     }
 
     @Override
@@ -84,7 +68,6 @@ public class UpdatableAppsFragment extends AppListFragment {
         task.setRespectUpdateBlacklist(true);
         task.setIncludeSystemApps(true);
         task.execute();
-        loadApps();
     }
 
     @Override
