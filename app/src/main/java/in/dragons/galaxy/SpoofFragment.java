@@ -1,5 +1,6 @@
 package in.dragons.galaxy;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -25,6 +26,11 @@ public class SpoofFragment extends Fragment {
     private Display mDisplay;
     private View v;
     private SharedPreferences sharedPreferences;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

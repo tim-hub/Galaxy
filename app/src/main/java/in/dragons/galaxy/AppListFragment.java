@@ -1,12 +1,13 @@
 package in.dragons.galaxy;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.percolate.caffeine.ViewUtils;
@@ -23,35 +24,26 @@ import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.view.AppBadge;
 import in.dragons.galaxy.view.ListItem;
 
-abstract public class AppListActivity extends GalaxyActivity {
+abstract public class AppListFragment extends Fragment {
 
     protected ListView listView;
     protected Map<String, ListItem> listItems = new HashMap<>();
 
     abstract public void loadApps();
+
     abstract protected ListItem getListItem(App app);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
-        getLayoutInflater().inflate(R.layout.app_updatable_inc, contentFrameLayout);
-
-        onContentChange();
-
-        getListView().setOnItemClickListener((parent, view, position, id) -> {
-            DetailsActivity.app = getAppByListPosition(position);
-            startActivity(DetailsActivity.getDetailsIntent(AppListActivity.this, DetailsActivity.app.getPackageName()));
-        });
-        registerForContextMenu(getListView());
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         DetailsActivity.app = getAppByListPosition(info.position);
-        new DownloadOptions(this, DetailsActivity.app).inflate(menu);
-        menu.findItem(R.id.action_download).setVisible(new ButtonDownload(this, DetailsActivity.app).shouldBeVisible());
+        new DownloadOptions((GalaxyActivity) this.getActivity(), DetailsActivity.app).inflate(menu);
+        menu.findItem(R.id.action_download).setVisible(new ButtonDownload((GalaxyActivity) this.getActivity(), DetailsActivity.app).shouldBeVisible());
         menu.findItem(R.id.action_uninstall).setVisible(DetailsActivity.app.isInstalled());
     }
 
@@ -64,17 +56,17 @@ abstract public class AppListActivity extends GalaxyActivity {
             case R.id.action_whitelist:
             case R.id.action_unignore:
             case R.id.action_unwhitelist:
-                new DownloadOptions(this, DetailsActivity.app).onContextItemSelected(item);
+                new DownloadOptions((GalaxyActivity) this.getActivity(), DetailsActivity.app).onContextItemSelected(item);
                 ((ListItem) getListView().getItemAtPosition(info.position)).draw();
                 break;
             case R.id.action_download:
-                new ButtonDownload(this, DetailsActivity.app).checkAndDownload();
+                new ButtonDownload((GalaxyActivity) this.getActivity(), DetailsActivity.app).checkAndDownload();
                 break;
             case R.id.action_uninstall:
-                new ButtonUninstall(this, DetailsActivity.app).uninstall();
+                new ButtonUninstall((GalaxyActivity) this.getActivity(), DetailsActivity.app).uninstall();
                 break;
             default:
-                return new DownloadOptions(this, DetailsActivity.app).onContextItemSelected(item);
+                return new DownloadOptions((GalaxyActivity) this.getActivity(), DetailsActivity.app).onContextItemSelected(item);
         }
         return true;
     }
@@ -83,21 +75,29 @@ abstract public class AppListActivity extends GalaxyActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (GalaxyPermissionManager.isGranted(requestCode, permissions, grantResults)) {
             Log.i(getClass().getSimpleName(), "User granted the write permission");
-            new ButtonDownload(this, DetailsActivity.app).download();
+            new ButtonDownload((GalaxyActivity) this.getActivity(), DetailsActivity.app).download();
         }
     }
 
-
     public void onContentChange() {
-        View emptyView = findViewById(android.R.id.empty);
-        listView = ViewUtils.findViewById(this, android.R.id.list);
+        View emptyView = getActivity().findViewById(android.R.id.empty);
+        listView = ViewUtils.findViewById(this.getActivity(), android.R.id.list);
         listView.setNestedScrollingEnabled(true);
         if (emptyView != null) {
             listView.setEmptyView(emptyView);
         }
         if (null == listView.getAdapter()) {
-            listView.setAdapter(new AppListAdapter(this, R.layout.two_line_list_item_with_icon));
+            listView.setAdapter(new AppListAdapter(this.getActivity(), R.layout.two_line_list_item_with_icon));
         }
+    }
+
+    public void grabDetails(int position) {
+        DetailsFragment.app = getAppByListPosition(position);
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString("PackageName", DetailsFragment.app.getPackageName());
+        detailsFragment.setArguments(arguments);
+        getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, detailsFragment).commit();
     }
 
     protected App getAppByListPosition(int position) {

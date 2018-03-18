@@ -19,16 +19,16 @@ import java.util.Collections;
 import java.util.List;
 
 import in.dragons.galaxy.CategoryManager;
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.Util;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.model.ImageSource;
 
-public class GeneralDetails extends Abstract {
+public class GeneralDetails extends AbstractHelper {
 
-    public GeneralDetails(DetailsActivity activity, App app) {
-        super(activity, app);
+    public GeneralDetails(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class GeneralDetails extends Abstract {
     }
 
     private void drawAppBadge(App app) {
-        ImageView imageView = (ImageView) activity.findViewById(R.id.icon);
+        ImageView imageView = (ImageView) detailsFragment.getActivity().findViewById(R.id.icon);
         ImageSource imageSource = app.getIconInfo();
         if (null != imageSource.getApplicationInfo()) {
             imageView.setImageDrawable(imageView.getContext().getPackageManager().getApplicationIcon(imageSource.getApplicationInfo()));
         } else {
             Picasso
-                    .with(activity)
+                    .with(detailsFragment.getActivity())
                     .load(imageSource.getUrl())
                     .placeholder(R.drawable.ic_placeholder)
                     .into(imageView);
@@ -55,12 +55,12 @@ public class GeneralDetails extends Abstract {
 
         setText(R.id.displayName, app.getDisplayName());
         setText(R.id.packageName, R.string.details_developer, app.getDeveloperName());
-        drawVersion((TextView) activity.findViewById(R.id.versionString), app);
+        drawVersion((TextView) detailsFragment.getActivity().findViewById(R.id.versionString), app);
     }
 
     private void drawGeneralDetails(App app) {
-        activity.findViewById(R.id.app_detail).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.general_card).setVisibility(View.VISIBLE);
+        detailsFragment.getActivity().findViewById(R.id.app_detail).setVisibility(View.VISIBLE);
+        detailsFragment.getActivity().findViewById(R.id.general_card).setVisibility(View.VISIBLE);
         setText(R.id.installs, R.string.details_installs, Util.addDiPrefix(app.getInstalls()));
         if (app.isEarlyAccess()) {
             setText(R.id.rating, R.string.early_access);
@@ -69,8 +69,8 @@ public class GeneralDetails extends Abstract {
         }
 
         setText(R.id.updated, R.string.details_updated, app.getUpdated());
-        setText(R.id.size, R.string.details_size, Formatter.formatShortFileSize(activity, app.getSize()));
-        setText(R.id.category, R.string.details_category, new CategoryManager(activity).getCategoryName(app.getCategoryId()));
+        setText(R.id.size, R.string.details_size, Formatter.formatShortFileSize(detailsFragment.getActivity(), app.getSize()));
+        setText(R.id.category, R.string.details_category, new CategoryManager(detailsFragment.getActivity()).getCategoryName(app.getCategoryId()));
         setText(R.id.developer, R.string.details_developer, app.getDeveloperName());
         setText(R.id.price, app.getPrice());
         setText(R.id.contains_ads, app.containsAds() ? R.string.details_contains_ads : R.string.details_no_ads);
@@ -79,24 +79,24 @@ public class GeneralDetails extends Abstract {
         drawChanges(app);
 
         if (app.getVersionCode() == 0) {
-            activity.findViewById(R.id.updated).setVisibility(View.GONE);
-            activity.findViewById(R.id.size).setVisibility(View.GONE);
+            detailsFragment.getActivity().findViewById(R.id.updated).setVisibility(View.GONE);
+            detailsFragment.getActivity().findViewById(R.id.size).setVisibility(View.GONE);
         }
     }
 
     private void drawChanges(App app) {
         String changes = app.getChanges();
         if (TextUtils.isEmpty(changes)) {
-            activity.findViewById(R.id.more_changes_container).setVisibility(View.GONE);
-            activity.findViewById(R.id.changes_container).setVisibility(View.GONE);
+            detailsFragment.getActivity().findViewById(R.id.more_changes_container).setVisibility(View.GONE);
+            detailsFragment.getActivity().findViewById(R.id.changes_container).setVisibility(View.GONE);
             return;
         }
         if (app.getInstalledVersionCode() == 0) {
             setText(R.id.changes, Html.fromHtml(changes).toString());
-            activity.findViewById(R.id.more_changes_container).setVisibility(View.VISIBLE);
+            detailsFragment.getActivity().findViewById(R.id.more_changes_container).setVisibility(View.VISIBLE);
         } else {
             setText(R.id.changes_upper, Html.fromHtml(changes).toString());
-            activity.findViewById(R.id.changes_container).setVisibility(View.VISIBLE);
+            detailsFragment.getActivity().findViewById(R.id.changes_container).setVisibility(View.VISIBLE);
         }
     }
 
@@ -112,16 +112,16 @@ public class GeneralDetails extends Abstract {
         if (null == value) {
             return;
         }
-        TextView itemView = new TextView(activity);
+        TextView itemView = new TextView(detailsFragment.getActivity());
         try {
             itemView.setAutoLinkMask(Linkify.ALL);
-            itemView.setText(activity.getString(R.string.two_items, key, Html.fromHtml(value)));
+            itemView.setText(detailsFragment.getString(R.string.two_items, key, Html.fromHtml(value)));
         } catch (RuntimeException e) {
             Log.w(getClass().getSimpleName(), "System WebView missing: " + e.getMessage());
             itemView.setAutoLinkMask(0);
-            itemView.setText(activity.getString(R.string.two_items, key, Html.fromHtml(value)));
+            itemView.setText(detailsFragment.getString(R.string.two_items, key, Html.fromHtml(value)));
         }
-        ((LinearLayout) activity.findViewById(R.id.offer_details)).addView(itemView);
+        ((LinearLayout) detailsFragment.getActivity().findViewById(R.id.offer_details)).addView(itemView);
     }
 
     private void drawVersion(TextView textView, App app) {
@@ -129,13 +129,13 @@ public class GeneralDetails extends Abstract {
         if (TextUtils.isEmpty(versionName)) {
             return;
         }
-        textView.setText(activity.getString(R.string.details_versionName, versionName));
+        textView.setText(detailsFragment.getString(R.string.details_versionName, versionName));
         textView.setVisibility(View.VISIBLE);
         if (!app.isInstalled()) {
             return;
         }
         try {
-            PackageInfo info = activity.getPackageManager().getPackageInfo(app.getPackageName(), 0);
+            PackageInfo info = detailsFragment.getActivity().getPackageManager().getPackageInfo(app.getPackageName(), 0);
             String currentVersion = info.versionName;
             if (info.versionCode == app.getVersionCode() || null == currentVersion) {
                 return;
@@ -145,8 +145,8 @@ public class GeneralDetails extends Abstract {
                 currentVersion += " (" + info.versionCode;
                 newVersion = app.getVersionCode() + ")";
             }
-            textView.setText(activity.getString(R.string.details_versionName_updatable, currentVersion, newVersion));
-            setText(R.id.download, activity.getString(R.string.details_update));
+            textView.setText(detailsFragment.getString(R.string.details_versionName_updatable, currentVersion, newVersion));
+            setText(R.id.download, detailsFragment.getString(R.string.details_update));
         } catch (PackageManager.NameNotFoundException e) {
             // We've checked for that already
         }
@@ -154,11 +154,11 @@ public class GeneralDetails extends Abstract {
 
     private void drawDescription(App app) {
         if (TextUtils.isEmpty(app.getDescription())) {
-            activity.findViewById(R.id.description_header).setVisibility(View.GONE);
+            detailsFragment.getActivity().findViewById(R.id.description_header).setVisibility(View.GONE);
         } else {
             setText(R.id.description, Html.fromHtml(app.getDescription()).toString());
             initExpandableGroup(R.id.description_header, R.id.description_container);
-            activity.findViewById(R.id.more_card).setVisibility(View.VISIBLE);
+            detailsFragment.getActivity().findViewById(R.id.more_card).setVisibility(View.VISIBLE);
             if (app.getInstalledVersionCode() == 0 || TextUtils.isEmpty(app.getChanges())) {
                 //activity.findViewById(R.id.description_header).performClick();
             }

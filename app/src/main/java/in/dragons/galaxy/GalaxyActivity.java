@@ -18,21 +18,34 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.NavigationViewMode;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.percolate.caffeine.ViewUtils;
 
-import in.dragons.galaxy.fragment.FilterMenu;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-public abstract class GalaxyActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
+import in.dragons.galaxy.fragment.FilterMenu;
+import in.dragons.galaxy.model.App;
+import in.dragons.galaxy.view.ListItem;
+
+public class GalaxyActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private NavigationView navigationView;
-    DrawerLayout drawer;
-    ActionBarDrawerToggle toggle;
-    Toolbar toolbar;
-    SearchView mSearchView;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
+    private SearchView mSearchView;
+
+    protected ListView listView;
+    protected ListItem listItem;
+    protected Map<String, ListItem> listItems = new HashMap<>();
+
+    static public App app;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,14 +172,39 @@ public abstract class GalaxyActivity extends BaseActivity implements NavigationV
         finish();
     }
 
+    public Set<String> getListedPackageNames() {
+        return listItems.keySet();
+    }
+
+    public void removeApp(String packageName) {
+        ((AppListAdapter) getListView().getAdapter()).remove(listItems.get(packageName));
+        listItems.remove(packageName);
+    }
+
+    public void loadApps() {
+    }
+
+
+    public void redrawDetails(App app){
+
+    }
+
+    protected ListItem getListItem(App app) {
+        return listItem;
+    }
+
+    public ListView getListView() {
+        return listView;
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_myapps:
-                startActivity(new Intent(this, InstalledAppsActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new InstalledAppsFragment()).commit();
                 break;
             case R.id.action_updates:
-                startActivity(new Intent(this, UpdatableAppsActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new UpdatableAppsFragment()).commit();
                 break;
             case R.id.action_categories:
                 startActivity(new Intent(this, CategoryListActivity.class));

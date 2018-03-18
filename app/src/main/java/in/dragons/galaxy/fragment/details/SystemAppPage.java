@@ -8,14 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 
-public class SystemAppPage extends Abstract {
+public class SystemAppPage extends AbstractHelper {
 
-    public SystemAppPage(DetailsActivity activity, App app) {
-        super(activity, app);
+    public SystemAppPage(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SystemAppPage extends Abstract {
         if (!app.isInstalled()) {
             return;
         }
-        ImageView systemAppInfo = (ImageView) activity.findViewById(R.id.system_app_info);
+        ImageView systemAppInfo = (ImageView) detailsFragment.getActivity().findViewById(R.id.system_app_info);
         systemAppInfo.setVisibility(View.VISIBLE);
         systemAppInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,7 +35,7 @@ public class SystemAppPage extends Abstract {
 
     private void startActivity() {
         try {
-            activity.startActivity(getIntent());
+            detailsFragment.getActivity().startActivity(getIntent());
         } catch (ActivityNotFoundException e) {
             Log.w(getClass().getSimpleName(), "Could not find system app activity");
         }

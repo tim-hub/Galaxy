@@ -12,14 +12,14 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import in.dragons.galaxy.ContextUtil;
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 
-public class Video extends Abstract {
+public class Video extends AbstractHelper {
 
-    public Video(DetailsActivity activity, App app) {
-        super(activity, app);
+    public Video(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
     }
 
     private String getID(String URL) {
@@ -41,23 +41,23 @@ public class Video extends Abstract {
         String vID = getID(app.getVideoUrl());
         String URL = "https://img.youtube.com/vi/" + vID + "/hqdefault.jpg";
 
-        ImageView imageView = (ImageView) activity.findViewById(R.id.thumbnail);
-        Picasso.with(activity)
+        ImageView imageView = (ImageView) detailsFragment.getActivity().findViewById(R.id.thumbnail);
+        Picasso.with(detailsFragment.getActivity())
                 .load(URL)
                 .fit()
                 .centerCrop()
                 .into(imageView);
 
-        activity.findViewById(R.id.app_video).setVisibility(View.VISIBLE);
+        detailsFragment.getActivity().findViewById(R.id.app_video).setVisibility(View.VISIBLE);
 
-        ImageView play = (ImageView) activity.findViewById(R.id.vid_play);
+        ImageView play = (ImageView) detailsFragment.getActivity().findViewById(R.id.vid_play);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getVideoUrl())));
+                    detailsFragment.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getVideoUrl())));
                 } catch (ActivityNotFoundException e) {
-                    ((ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(app.getVideoUrl());
+                    ((ClipboardManager) detailsFragment.getActivity().getSystemService(Context.CLIPBOARD_SERVICE)).setText(app.getVideoUrl());
                     ContextUtil.toast(v.getContext().getApplicationContext(), R.string.about_copied_to_clipboard);
                 }
             }

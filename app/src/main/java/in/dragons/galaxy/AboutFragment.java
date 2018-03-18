@@ -1,5 +1,6 @@
 package in.dragons.galaxy;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -17,6 +18,11 @@ import com.squareup.picasso.Picasso;
 public class AboutFragment extends Fragment {
 
     private View v;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

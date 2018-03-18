@@ -8,17 +8,17 @@ import android.widget.ImageView;
 
 import com.percolate.caffeine.ViewUtils;
 
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.task.playstore.PurchaseTask;
 
-public class BackToPlayStore extends Abstract {
+public class BackToPlayStore extends AbstractHelper {
 
     static private final String PLAY_STORE_PACKAGE_NAME = "com.android.vending";
 
-    public BackToPlayStore(DetailsActivity activity, App app) {
-        super(activity, app);
+    public BackToPlayStore(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
     }
 
     @Override
@@ -26,22 +26,22 @@ public class BackToPlayStore extends Abstract {
         if (!isPlayStoreInstalled() || !app.isInPlayStore()) {
             return;
         }
-        ViewUtils.findViewById(activity,R.id.to_play_store_cnt).setVisibility(View.VISIBLE);
-        ImageView toPlayStore = (ImageView) activity.findViewById(R.id.to_play_store);
+        ViewUtils.findViewById(detailsFragment.getActivity(),R.id.to_play_store_cnt).setVisibility(View.VISIBLE);
+        ImageView toPlayStore = (ImageView) detailsFragment.getActivity().findViewById(R.id.to_play_store);
         toPlayStore.setVisibility(View.VISIBLE);
         toPlayStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(PurchaseTask.URL_PURCHASE + app.getPackageName()));
-                activity.startActivity(i);
+                detailsFragment.getActivity().startActivity(i);
             }
         });
     }
 
     private boolean isPlayStoreInstalled() {
         try {
-            return null != activity.getPackageManager().getPackageInfo(PLAY_STORE_PACKAGE_NAME, 0);
+            return null != detailsFragment.getActivity().getPackageManager().getPackageInfo(PLAY_STORE_PACKAGE_NAME, 0);
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }

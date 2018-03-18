@@ -23,6 +23,8 @@ import com.percolate.caffeine.ToastUtils;
 import com.percolate.caffeine.ViewUtils;
 import com.squareup.picasso.Picasso;
 
+import in.dragons.galaxy.model.App;
+
 public abstract class BaseActivity extends AestheticActivity {
 
     static protected boolean logout = false;
@@ -154,5 +156,4 @@ public abstract class BaseActivity extends AestheticActivity {
         logout = true;
         finish();
     }
-
 }

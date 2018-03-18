@@ -8,18 +8,18 @@ import android.widget.ImageView;
 import com.percolate.caffeine.ViewUtils;
 
 import in.dragons.galaxy.ClusterActivity;
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.SearchActivity;
 import in.dragons.galaxy.model.App;
 
-public class AppLists extends Abstract {
+public class AppLists extends AbstractHelper {
 
     static private final String SIMILAR_APPS_KEY = "Similar apps";
     static private final String RECOMMENDED_APPS_KEY = "You might also";
 
-    public AppLists(DetailsActivity activity, App app) {
-        super(activity, app);
+    public AppLists(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
     }
 
     @Override
@@ -40,27 +40,27 @@ public class AppLists extends Abstract {
     }
 
     private void addAppsSimilar(String URL, String Label) {
-        ViewUtils.findViewById(activity, R.id.apps_recommended_cnt).setVisibility(View.VISIBLE);
-        ImageView imageView = (ImageView) activity.findViewById(R.id.apps_similar);
-        imageView.setOnClickListener(v -> ClusterActivity.start(activity, URL, Label));
+        ViewUtils.findViewById(detailsFragment.getActivity(), R.id.apps_recommended_cnt).setVisibility(View.VISIBLE);
+        ImageView imageView = (ImageView) detailsFragment.getActivity().findViewById(R.id.apps_similar);
+        imageView.setOnClickListener(v -> ClusterActivity.start(detailsFragment.getActivity(), URL, Label));
     }
 
     private void addAppsRecommended(String URL, String Label) {
-        ViewUtils.findViewById(activity, R.id.apps_similar_cnt).setVisibility(View.VISIBLE);
-        ImageView imageView = (ImageView) activity.findViewById(R.id.apps_recommended);
-        imageView.setOnClickListener(v -> ClusterActivity.start(activity, URL, Label));
+        ViewUtils.findViewById(detailsFragment.getActivity(), R.id.apps_similar_cnt).setVisibility(View.VISIBLE);
+        ImageView imageView = (ImageView) detailsFragment.getActivity().findViewById(R.id.apps_recommended);
+        imageView.setOnClickListener(v -> ClusterActivity.start(detailsFragment.getActivity(), URL, Label));
     }
 
     private void addAppsByThisDeveloper() {
-        ViewUtils.findViewById(activity, R.id.apps_by_same_developer_cnt).setVisibility(View.VISIBLE);
-        ImageView imageView = (ImageView) activity.findViewById(R.id.apps_by_same_developer);
+        ViewUtils.findViewById(detailsFragment.getActivity(), R.id.apps_by_same_developer_cnt).setVisibility(View.VISIBLE);
+        ImageView imageView = (ImageView) detailsFragment.getActivity().findViewById(R.id.apps_by_same_developer);
         imageView.setVisibility(View.VISIBLE);
         imageView.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, SearchActivity.class);
+            Intent intent = new Intent(detailsFragment.getActivity(), SearchActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction(Intent.ACTION_SEARCH);
             intent.putExtra(SearchManager.QUERY, SearchActivity.PUB_PREFIX + app.getDeveloperName());
-            activity.startActivity(intent);
+            detailsFragment.getActivity().startActivity(intent);
         });
     }
 }

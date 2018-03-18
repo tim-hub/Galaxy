@@ -5,13 +5,14 @@ import android.view.View;
 
 import in.dragons.galaxy.DetailsActivity;
 import in.dragons.galaxy.DownloadState;
+import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.notification.CancelDownloadService;
 
 public class ButtonCancel extends Button {
 
-    public ButtonCancel(DetailsActivity activity, App app) {
+    public ButtonCancel(GalaxyActivity activity, App app) {
         super(activity, app);
     }
 

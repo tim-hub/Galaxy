@@ -6,6 +6,7 @@ import android.view.View;
 
 import in.dragons.galaxy.DetailsActivity;
 import in.dragons.galaxy.DownloadState;
+import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.InstallationState;
 import in.dragons.galaxy.InstallerFactory;
 import in.dragons.galaxy.Paths;
@@ -14,7 +15,7 @@ import in.dragons.galaxy.model.App;
 
 public class ButtonInstall extends Button {
 
-    public ButtonInstall(DetailsActivity activity, App app) {
+    public ButtonInstall(GalaxyActivity activity, App app) {
         super(activity, app);
     }
 

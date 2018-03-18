@@ -10,10 +10,10 @@ import java.lang.ref.WeakReference;
 
 public class DetailsDownloadReceiver extends DownloadReceiver {
 
-    private WeakReference<DetailsActivity> activityRef = new WeakReference<>(null);
+    private WeakReference<GalaxyActivity> activityRef = new WeakReference<>(null);
     private String packageName;
 
-    public DetailsDownloadReceiver(DetailsActivity activity, String packageName) {
+    public DetailsDownloadReceiver(GalaxyActivity activity, String packageName) {
         activityRef = new WeakReference<>(activity);
         this.packageName = packageName;
         IntentFilter filter = new IntentFilter();
@@ -26,7 +26,7 @@ public class DetailsDownloadReceiver extends DownloadReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        DetailsActivity activity = activityRef.get();
+       GalaxyActivity activity = activityRef.get();
         if (null == activity || !ContextUtil.isAlive(activity)) {
             return;
         }

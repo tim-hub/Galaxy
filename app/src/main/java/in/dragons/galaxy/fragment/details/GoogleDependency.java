@@ -6,18 +6,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.DetailsFragment;
 import in.dragons.galaxy.SharedPreferencesTranslator;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.task.playstore.DependencyTranslationTask;
 
-public class GoogleDependency extends Abstract {
+public class GoogleDependency extends AbstractHelper {
 
     private SharedPreferencesTranslator translator;
 
-    public GoogleDependency(DetailsActivity activity, App app) {
-        super(activity, app);
-        translator = new SharedPreferencesTranslator(PreferenceManager.getDefaultSharedPreferences(activity));
+    public GoogleDependency(DetailsFragment detailsFragment, App app) {
+        super(detailsFragment, app);
+        translator = new SharedPreferencesTranslator(PreferenceManager.getDefaultSharedPreferences(detailsFragment.getActivity()));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GoogleDependency extends Abstract {
                 }
             }
         };
-        task.setContext(activity);
+        task.setContext(detailsFragment.getActivity());
         task.execute(untranslated.toArray(new String[untranslated.size()]));
     }
 }

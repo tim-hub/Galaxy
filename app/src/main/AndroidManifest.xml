@@ -22,13 +22,13 @@
 
     <application
         android:name=".GalaxyApplication"
+        android:allowBackup="true"
         android:banner="@mipmap/ic_launcher"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:allowBackup="true"
-        android:fullBackupContent="true">
+        android:theme="@style/AppTheme">
         <provider
             android:name="in.dragons.galaxy.FileProvider"
             android:authorities="in.dragons.galaxy.fileprovider"
@@ -202,12 +202,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-            </intent-filter>
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
@@ -230,6 +224,21 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/action_spoofed"
             android:launchMode="singleInstance" />
+        <activity
+            android:name=".GalaxyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package in.dragons.galaxy;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.SharedPreferences;
@@ -25,6 +26,11 @@ public class AccountsFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private String Email;
     private View v;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

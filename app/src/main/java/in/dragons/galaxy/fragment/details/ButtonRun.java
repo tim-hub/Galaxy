@@ -8,13 +8,14 @@ import android.util.Log;
 import android.view.View;
 
 import in.dragons.galaxy.DetailsActivity;
+import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.GalaxyApplication;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 
 public class ButtonRun extends Button {
 
-    public ButtonRun(DetailsActivity activity, App app) {
+    public ButtonRun(GalaxyActivity activity, App app) {
         super(activity, app);
     }
 

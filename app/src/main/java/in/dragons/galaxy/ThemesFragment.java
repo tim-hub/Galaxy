@@ -1,5 +1,6 @@
 package in.dragons.galaxy;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,11 @@ import com.afollestad.materialdialogs.color.ColorChooserDialog;
 public class ThemesFragment extends Fragment {
 
     private View v;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
