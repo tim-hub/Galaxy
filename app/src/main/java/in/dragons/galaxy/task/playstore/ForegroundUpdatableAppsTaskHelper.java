@@ -66,7 +66,7 @@ public class ForegroundUpdatableAppsTaskHelper extends UpdatableAppsTask impleme
             activity.getActivity().findViewById(R.id.unicorn).setVisibility(View.VISIBLE);
         else {
             setText(R.id.updates_txt, R.string.list_update_all_txt, updatableApps.size());
-            //setupButtons();
+            setupButtons();
         }
     }
 

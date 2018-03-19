@@ -27,6 +27,7 @@ public class ThemesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.app_theme_inc, container, false);
+        getActivity().setTitle(R.string.action_themes);
 
         setupSelection();
         setupTheme();

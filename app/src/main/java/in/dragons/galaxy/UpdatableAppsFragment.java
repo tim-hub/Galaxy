@@ -40,6 +40,8 @@ public class UpdatableAppsFragment extends AppListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getActivity().setTitle(getString(R.string.activity_title_updates_only));
+
         v = inflater.inflate(R.layout.app_updatable_inc, container, false);
 
         setupListView(v, R.layout.two_line_list_item_with_icon);
@@ -71,10 +73,16 @@ public class UpdatableAppsFragment extends AppListFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(updateAllReceiver);
+    public void onPause() {
+        super.onPause();
+        getTask().cancel(true);
     }
+
+    @Override
+    public void setRetainInstance(boolean retain) {
+        super.setRetainInstance(true);
+    }
+
 
     @Override
     public void loadApps() {

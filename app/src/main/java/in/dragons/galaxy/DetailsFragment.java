@@ -150,6 +150,8 @@ public class DetailsFragment extends Fragment {
         downloadOrInstallFragment = new DownloadOrInstall((GalaxyActivity) this.getActivity(), app);
         redrawButtons();
         new DownloadOptions((GalaxyActivity) this.getActivity(), app).draw();
+
+        getActivity().setTitle(app.getDisplayName());
     }
 
     static class GetAndRedrawDetailsTask extends DetailsTask implements CloneableTask {

@@ -39,6 +39,8 @@ public class InstalledAppsFragment extends AppListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getActivity().setTitle(R.string.activity_title_updates_and_other_apps);
+
         v = inflater.inflate(R.layout.app_installed_inc, container, false);
 
         setupListView(v, R.layout.two_line_list_item_with_icon);
@@ -60,6 +62,11 @@ public class InstalledAppsFragment extends AppListFragment {
         AppListValidityCheckTask task = new AppListValidityCheckTask((GalaxyActivity) this.getActivity());
         task.setIncludeSystemApps(new FilterMenu((GalaxyActivity) this.getActivity()).getFilterPreferences().isSystemApps());
         task.execute();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package in.dragons.galaxy;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
     private SearchView mSearchView;
+    private boolean doubleBackToExitPressedOnce = false;
 
     protected Map<String, ListItem> listItems = new HashMap<>();
     protected AppListIterator iterator;
@@ -87,6 +89,9 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
         getUser();
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+        if (savedInstanceState == null)
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new InstalledAppsFragment()).commit();
     }
 
     public void getUser() {
@@ -124,6 +129,12 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
     protected void onStop() {
         Log.v(getClass().getSimpleName(), "Stopping activity");
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 
     @Override
@@ -238,12 +249,15 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        Fragment fragment = new UpdatableAppsFragment();
+
         switch (item.getItemId()) {
             case R.id.action_myapps:
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new InstalledAppsFragment()).commit();
                 break;
             case R.id.action_updates:
-                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new UpdatableAppsFragment()).commit();
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new UpdatableAppsFragment(), "UPDATES").commit();
                 break;
             case R.id.action_categories:
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new CategoryListFragment()).commit();
@@ -265,7 +279,7 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
                 break;
         }
 
-        DrawerLayout drawer = ViewUtils.findViewById(this, R.id.drawer_layout);
+        drawer = ViewUtils.findViewById(this, R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

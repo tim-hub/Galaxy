@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.afollestad.aesthetic.Aesthetic;
 import com.percolate.caffeine.ViewUtils;
 
+import java.util.ArrayList;
+
 public class TopCategoriesAdapter extends RecyclerView.Adapter<TopCategoriesAdapter.ViewHolder> {
 
     private Context context;
@@ -68,6 +70,7 @@ public class TopCategoriesAdapter extends RecyclerView.Adapter<TopCategoriesAdap
         holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[holder.getAdapterPosition()]));
         holder.topImage.setOnClickListener(v -> {
             GalaxyActivity activity = (GalaxyActivity) view.getContext();
+            activity.setTitle(translator.getString(categories[position]));
             Fragment myFragment = new EndlessScrollFragment();
             Bundle arguments = new Bundle();
             arguments.putString("CategoryID", categories[holder.getAdapterPosition()]);

@@ -103,6 +103,7 @@ public class AllCategoriesAdapter extends RecyclerView.Adapter<AllCategoriesAdap
         holder.topImage.setImageDrawable(context.getResources().getDrawable(categoriesImg[holder.getAdapterPosition()]));
         holder.topContainer.setOnClickListener(v -> {
             GalaxyActivity activity = (GalaxyActivity) view.getContext();
+            activity.setTitle(translator.getString(new ArrayList<>(categories.keySet()).get(holder.getAdapterPosition())));
             Fragment myFragment = new EndlessScrollFragment();
             Bundle arguments = new Bundle();
             arguments.putString("CategoryID", new ArrayList<>(categories.keySet()).get(holder.getAdapterPosition()));

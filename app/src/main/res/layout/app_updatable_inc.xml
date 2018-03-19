@@ -61,8 +61,7 @@
                     android:paddingRight="10dp"
                     android:text="@string/list_update_all"
                     android:textColor="@color/white"
-                    android:theme="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:visibility="gone" />
+                    android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/update_cancel"

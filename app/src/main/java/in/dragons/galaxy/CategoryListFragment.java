@@ -26,6 +26,7 @@ public class CategoryListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.categories_activity_layout, container, false);
+        getActivity().setTitle(getString(R.string.action_categories));
 
         CategoryManager manager = new CategoryManager(this.getActivity());
         getTask(manager).execute();

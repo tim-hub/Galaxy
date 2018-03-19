@@ -36,6 +36,7 @@ public class SpoofFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.app_device_inc, container, false);
+        getActivity().setTitle(R.string.action_spoofed);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         deviceName = sharedPreferences.getString(PreferenceActivity.PREFERENCE_DEVICE_TO_PRETEND_TO_BE, "");

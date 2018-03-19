@@ -41,6 +41,7 @@ public class AccountsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.app_acc_inc, container, false);
+        getActivity().setTitle(R.string.action_accounts);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Email = sharedPreferences.getString(PlayStoreApiAuthenticator.PREFERENCE_EMAIL, "");
