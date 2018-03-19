@@ -128,6 +128,9 @@ public abstract class BaseActivity extends AestheticActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                searchView.clearFocus();
                 setQuery(query);
                 return false;
             }
