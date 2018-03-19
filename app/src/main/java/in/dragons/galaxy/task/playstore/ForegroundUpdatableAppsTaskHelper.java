@@ -14,6 +14,7 @@ import java.util.List;
 
 import in.dragons.galaxy.BlackWhiteListManager;
 import in.dragons.galaxy.BuildConfig;
+import in.dragons.galaxy.ContextUtil;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.UpdatableAppsFragment;
 import in.dragons.galaxy.model.App;
@@ -65,9 +66,16 @@ public class ForegroundUpdatableAppsTaskHelper extends UpdatableAppsTask impleme
         if (success() && updatableApps.isEmpty())
             activity.getActivity().findViewById(R.id.unicorn).setVisibility(View.VISIBLE);
         else {
-            setText(R.id.updates_txt, R.string.list_update_all_txt, updatableApps.size());
-            setupButtons();
+            if (ContextUtil.isAlive(activity.getActivity()) && isAlive()) {
+                setText(R.id.updates_txt, R.string.list_update_all_txt, updatableApps.size());
+                setupButtons();
+            }
         }
+    }
+
+    private boolean isAlive() {
+        UpdatableAppsFragment updatableAppsFragment = (UpdatableAppsFragment) activity.getFragmentManager().findFragmentByTag("UPDATES");
+        return (updatableAppsFragment != null && updatableAppsFragment.isVisible());
     }
 
     private void setupButtons() {

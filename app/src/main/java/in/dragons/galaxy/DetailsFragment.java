@@ -175,10 +175,14 @@ public class DetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(App app) {
             super.onPostExecute(app);
-            if (app != null) {
+            if (app != null && ContextUtil.isAlive(detailsFragment.getActivity()) && isAlive()) {
                 DetailsFragment.app = app;
                 detailsFragment.redrawDetails(app);
             }
+        }
+
+        private boolean isAlive() {
+            return (detailsFragment != null && detailsFragment.isVisible());
         }
     }
 }

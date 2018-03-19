@@ -79,12 +79,6 @@ public class UpdatableAppsFragment extends AppListFragment {
     }
 
     @Override
-    public void setRetainInstance(boolean retain) {
-        super.setRetainInstance(true);
-    }
-
-
-    @Override
     public void loadApps() {
         getTask().execute();
     }
