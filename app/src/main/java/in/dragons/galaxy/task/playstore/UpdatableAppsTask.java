@@ -22,7 +22,7 @@ import java.util.Set;
 import in.dragons.galaxy.BlackWhiteListManager;
 import in.dragons.galaxy.ContextUtil;
 import in.dragons.galaxy.PlayStoreApiAuthenticator;
-import in.dragons.galaxy.PreferenceActivity;
+import in.dragons.galaxy.PreferenceFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.task.InstalledAppsTask;
@@ -84,7 +84,7 @@ public class UpdatableAppsTask extends RemoteAppListTask {
 
     protected List<App> getAppsFromPlayStore(GooglePlayAPI api, Collection<String> packageNames) throws IOException {
         List<App> appsFromPlayStore = new ArrayList<>();
-        boolean builtInAccount = PreferenceActivity.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL);
+        boolean builtInAccount = PreferenceFragment.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL);
         for (App app : getRemoteAppList(api, new ArrayList<>(packageNames))) {
             if (!builtInAccount || app.isFree()) {
                 appsFromPlayStore.add(app);
@@ -95,7 +95,7 @@ public class UpdatableAppsTask extends RemoteAppListTask {
 
     private Map<String, App> filterBlacklistedApps(Map<String, App> apps) {
         Set<String> packageNames = new HashSet<>(apps.keySet());
-        if (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceActivity.PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK, PreferenceActivity.LIST_BLACK).equals(PreferenceActivity.LIST_BLACK)) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceFragment.PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK, PreferenceFragment.LIST_BLACK).equals(PreferenceFragment.LIST_BLACK)) {
             packageNames.removeAll(new BlackWhiteListManager(context).get());
         } else {
             packageNames.retainAll(new BlackWhiteListManager(context).get());

@@ -58,7 +58,7 @@ public class BitmapManager {
 
     public BitmapManager(Context context) {
         baseDir = context.getCacheDir();
-        noImages = PreferenceActivity.getBoolean(context, PreferenceActivity.PREFERENCE_NO_IMAGES) && NetworkState.isMetered(context);
+        noImages = PreferenceFragment.getBoolean(context, PreferenceFragment.PREFERENCE_NO_IMAGES) && NetworkState.isMetered(context);
     }
 
     public Bitmap getBitmap(String url, boolean fullSize) {

@@ -41,7 +41,7 @@ public class GalaxySuggestionProvider extends ContentProvider {
             fill(cursor, uri);
         } catch (GooglePlayException e) {
             if (e.getCode() == 401
-                    && PreferenceActivity.getBoolean(getContext(), PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)
+                    && PreferenceFragment.getBoolean(getContext(), PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)
                     ) {
                 refreshAndRetry(cursor, uri);
             } else {

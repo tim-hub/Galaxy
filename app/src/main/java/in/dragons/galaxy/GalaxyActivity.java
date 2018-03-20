@@ -3,7 +3,6 @@ package in.dragons.galaxy;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -263,7 +262,7 @@ public class GalaxyActivity extends BaseActivity implements NavigationView.OnNav
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new CategoryListFragment()).commit();
                 break;
             case R.id.action_settings:
-                startActivity(new Intent(this, PreferenceActivity.class));
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new PreferenceFragment()).commit();
                 break;
             case R.id.action_spoofed:
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, new SpoofFragment()).commit();

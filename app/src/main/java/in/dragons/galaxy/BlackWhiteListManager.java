@@ -19,7 +19,7 @@ public class BlackWhiteListManager {
     public BlackWhiteListManager(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         blackWhiteSet = new HashSet<>(Arrays.asList(TextUtils.split(
-                preferences.getString(PreferenceActivity.PREFERENCE_UPDATE_LIST, ""),
+                preferences.getString(PreferenceFragment.PREFERENCE_UPDATE_LIST, ""),
                 DELIMITER
         )));
         if (blackWhiteSet.size() == 1 && blackWhiteSet.contains("")) {
@@ -43,7 +43,7 @@ public class BlackWhiteListManager {
     }
 
     public boolean isBlack() {
-        return preferences.getString(PreferenceActivity.PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK, PreferenceActivity.LIST_BLACK).equals(PreferenceActivity.LIST_BLACK);
+        return preferences.getString(PreferenceFragment.PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK, PreferenceFragment.LIST_BLACK).equals(PreferenceFragment.LIST_BLACK);
     }
 
     public boolean isUpdatable(String packageName) {
@@ -69,7 +69,7 @@ public class BlackWhiteListManager {
     private void save() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(
-                PreferenceActivity.PREFERENCE_UPDATE_LIST,
+                PreferenceFragment.PREFERENCE_UPDATE_LIST,
                 TextUtils.join(DELIMITER, blackWhiteSet)
         );
         editor.commit();

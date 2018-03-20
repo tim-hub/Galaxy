@@ -45,7 +45,7 @@ public class DownloadManagerAdapter extends DownloadManagerAbstract {
                 throw new RuntimeException("Unknown request type");
         }
         if (DownloadState.get(app.getPackageName()).getTriggeredBy().equals(DownloadState.TriggeredBy.SCHEDULED_UPDATE)
-                && PreferenceActivity.getBoolean(context, PreferenceActivity.PREFERENCE_BACKGROUND_UPDATE_WIFI_ONLY)
+                && PreferenceFragment.getBoolean(context, PreferenceFragment.PREFERENCE_BACKGROUND_UPDATE_WIFI_ONLY)
                 ) {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         }

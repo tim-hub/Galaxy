@@ -137,7 +137,7 @@
                  android:resource="@xml/searchable" />
          </activity-->
         <activity
-            android:name=".PreferenceActivity"
+            android:name=".PreferenceFragment"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/action_settings" />
         <activity

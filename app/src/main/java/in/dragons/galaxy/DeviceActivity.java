@@ -28,7 +28,7 @@ public class DeviceActivity extends GalaxyActivity {
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.app_device_inc, contentFrameLayout);
 
-        deviceName = sharedPreferences.getString(PreferenceActivity.PREFERENCE_DEVICE_TO_PRETEND_TO_BE, "");
+        deviceName = sharedPreferences.getString(PreferenceFragment.PREFERENCE_DEVICE_TO_PRETEND_TO_BE, "");
         spoofed = (ImageView) findViewById(R.id.spoofed_indicator);
         mDisplay = (this).getWindowManager().getDefaultDisplay();
 

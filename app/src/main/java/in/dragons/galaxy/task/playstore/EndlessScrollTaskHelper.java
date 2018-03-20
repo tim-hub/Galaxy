@@ -13,7 +13,7 @@ import java.util.List;
 import in.dragons.galaxy.AppListIterator;
 import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.PlayStoreApiAuthenticator;
-import in.dragons.galaxy.PreferenceActivity;
+import in.dragons.galaxy.PreferenceFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.model.App;
 import in.dragons.galaxy.model.Filter;
@@ -59,7 +59,7 @@ abstract public class EndlessScrollTaskHelper extends PlayStorePayloadTask<List<
                     throw (IOException) e.getCause();
                 } else if (e.getCause() instanceof GooglePlayException
                         && ((GooglePlayException) e.getCause()).getCode() == 401
-                        && PreferenceActivity.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)
+                        && PreferenceFragment.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)
                         ) {
                     PlayStoreApiAuthenticator authenticator = new PlayStoreApiAuthenticator(context);
                     authenticator.refreshToken();

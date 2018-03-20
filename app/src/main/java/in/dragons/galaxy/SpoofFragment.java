@@ -39,7 +39,7 @@ public class SpoofFragment extends Fragment {
         getActivity().setTitle(R.string.action_spoofed);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        deviceName = sharedPreferences.getString(PreferenceActivity.PREFERENCE_DEVICE_TO_PRETEND_TO_BE, "");
+        deviceName = sharedPreferences.getString(PreferenceFragment.PREFERENCE_DEVICE_TO_PRETEND_TO_BE, "");
         spoofed = (ImageView) v.findViewById(R.id.spoofed_indicator);
         mDisplay = (this).getActivity().getWindowManager().getDefaultDisplay();
 

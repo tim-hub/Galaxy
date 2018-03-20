@@ -36,7 +36,7 @@ public class Paths {
     static public File getDownloadPath(Context context) {
         return new File(
                 getStorageRoot(context),
-                PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceActivity.PREFERENCE_DOWNLOAD_DIRECTORY, "")
+                PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceFragment.PREFERENCE_DOWNLOAD_DIRECTORY, "")
         );
     }
 

@@ -1,18 +1,13 @@
 package in.dragons.galaxy;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
-
-import com.afollestad.aesthetic.Aesthetic;
-import com.percolate.caffeine.ViewUtils;
 
 import in.dragons.galaxy.fragment.preference.Blacklist;
 import in.dragons.galaxy.fragment.preference.CheckUpdates;
@@ -21,7 +16,7 @@ import in.dragons.galaxy.fragment.preference.DownloadDirectory;
 import in.dragons.galaxy.fragment.preference.InstallationMethod;
 import in.dragons.galaxy.fragment.preference.Language;
 
-public class PreferenceActivity extends android.preference.PreferenceActivity {
+public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     public static final String PREFERENCE_AUTO_INSTALL = "PREFERENCE_AUTO_INSTALL";
     public static final String PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK = "PREFERENCE_UPDATE_LIST_WHITE_OR_BLACK";
@@ -45,9 +40,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     public static final String LIST_BLACK = "black";
 
-    private android.support.v7.widget.Toolbar mToolbar;
-    private Boolean isBlack = false;
-
     static public boolean getBoolean(Context context, String key) {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, false);
     }
@@ -59,7 +51,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     static public int getUpdateInterval(Context context) {
         return Util.parseInt(
                 PreferenceManager.getDefaultSharedPreferences(context).getString(
-                        PreferenceActivity.PREFERENCE_BACKGROUND_UPDATE_INTERVAL,
+                        PreferenceFragment.PREFERENCE_BACKGROUND_UPDATE_INTERVAL,
                         "-1"
                 ),
                 -1
@@ -74,31 +66,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Aesthetic.get()
-                .isDark()
-                .take(1)
-                .subscribe(isDark -> {
-                    if (isDark)
-                        setTheme(R.style.AppTheme_Dark);
-                });
-
-        Aesthetic.get()
-                .colorWindowBackground()
-                .take(1)
-                .subscribe(colorWindowBackground -> {
-                    if (colorWindowBackground == Color.BLACK)
-                        isBlack = true;
-                });
-
-        if (isBlack)
-            setTheme(R.style.AppTheme_Black);
-
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-
-        setContentView(R.layout.preference_activity_layout);
-
-        initPaint();
+        getActivity().setTitle(R.string.action_settings);
 
         drawBlackList();
         drawLanguages();
@@ -108,20 +78,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         new DownloadDirectory(this).setPreference((EditTextPreference) findPreference(PREFERENCE_DOWNLOAD_DIRECTORY)).draw();
     }
 
-    private void initPaint() {
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        mToolbar = ViewUtils.findViewById(this, R.id.toolbar);
-        mToolbar.setTitleTextColor(Color.WHITE);
-        Aesthetic.get().colorStatusBar().take(1).subscribe(window::setStatusBarColor);
-        Aesthetic.get().colorPrimary().take(1).subscribe(mToolbar::setBackgroundColor);
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (!GalaxyPermissionManager.isGranted(requestCode, permissions, grantResults)) {
             Log.i(getClass().getSimpleName(), "User denied the write permission");
-            finish();
+            getActivity().finish();
         }
     }
 

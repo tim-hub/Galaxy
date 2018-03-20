@@ -21,7 +21,7 @@ import in.dragons.galaxy.DeviceInfoActivity;
 import in.dragons.galaxy.GalaxyActivity;
 import in.dragons.galaxy.OnListPreferenceChangeListener;
 import in.dragons.galaxy.PlayStoreApiAuthenticator;
-import in.dragons.galaxy.PreferenceActivity;
+import in.dragons.galaxy.PreferenceFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.SpoofDeviceManager;
 import in.dragons.galaxy.Util;
@@ -30,7 +30,7 @@ public class Device extends List {
 
     private static final String PREFERENCE_DEVICE_DEFINITION_REQUESTED = "PREFERENCE_DEVICE_DEFINITION_REQUESTED";
 
-    public Device(PreferenceActivity activity) {
+    public Device(PreferenceFragment activity) {
         super(activity);
     }
 
@@ -41,15 +41,15 @@ public class Device extends List {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 ContextUtil.toast(
-                        activity.getApplicationContext(),
+                        activity.getActivity().getApplicationContext(),
                         R.string.pref_device_to_pretend_to_be_notice,
-                        PreferenceManager.getDefaultSharedPreferences(activity).getString(PreferenceActivity.PREFERENCE_DOWNLOAD_DIRECTORY, "")
+                        PreferenceManager.getDefaultSharedPreferences(activity.getActivity()).getString(PreferenceFragment.PREFERENCE_DOWNLOAD_DIRECTORY, "")
                 );
                 ((AlertDialog) listPreference.getDialog()).getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
                         if (position > 0) {
-                            Intent i = new Intent(activity, DeviceInfoActivity.class);
+                            Intent i = new Intent(activity.getActivity(), DeviceInfoActivity.class);
                             i.putExtra(DeviceInfoActivity.INTENT_DEVICE_NAME, (String) keyValueMap.keySet().toArray()[position]);
                             activity.startActivity(i);
                         }
@@ -67,7 +67,7 @@ public class Device extends List {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if (!TextUtils.isEmpty((String) newValue) && !isDeviceDefinitionValid((String) newValue)) {
-                    ContextUtil.toast(activity.getApplicationContext(), R.string.error_invalid_device_definition);
+                    ContextUtil.toast(activity.getActivity().getApplicationContext(), R.string.error_invalid_device_definition);
                     return false;
                 }
                 showLogOutDialog();
@@ -80,7 +80,7 @@ public class Device extends List {
 
     @Override
     protected Map<String, String> getKeyValueMap() {
-        Map<String, String> devices = new SpoofDeviceManager(activity).getDevices();
+        Map<String, String> devices = new SpoofDeviceManager(activity.getActivity()).getDevices();
         devices = Util.sort(devices);
         Util.addToStart(
                 (LinkedHashMap<String, String>) devices,
@@ -92,13 +92,13 @@ public class Device extends List {
 
     private boolean isDeviceDefinitionValid(String spoofDevice) {
         PropertiesDeviceInfoProvider deviceInfoProvider = new PropertiesDeviceInfoProvider();
-        deviceInfoProvider.setProperties(new SpoofDeviceManager(activity).getProperties(spoofDevice));
+        deviceInfoProvider.setProperties(new SpoofDeviceManager(activity.getActivity()).getProperties(spoofDevice));
         deviceInfoProvider.setLocaleString(Locale.getDefault().toString());
         return deviceInfoProvider.isValid();
     }
 
     private boolean showRequestDialog(boolean logOut) {
-        PreferenceManager.getDefaultSharedPreferences(activity)
+        PreferenceManager.getDefaultSharedPreferences(activity.getActivity())
                 .edit()
                 .putBoolean(PREFERENCE_DEVICE_DEFINITION_REQUESTED, true)
                 .commit()
@@ -107,19 +107,19 @@ public class Device extends List {
     }
 
     private AlertDialog showLogOutDialog() {
-        return new AlertDialog.Builder(activity)
+        return new AlertDialog.Builder(activity.getActivity())
                 .setMessage(R.string.pref_device_to_pretend_to_be_toast)
                 .setTitle(R.string.dialog_title_logout)
-                .setPositiveButton(android.R.string.yes, new RequestOnClickListener(activity, true))
-                .setNegativeButton(R.string.dialog_two_factor_cancel, new RequestOnClickListener(activity, false))
+                .setPositiveButton(android.R.string.yes, new RequestOnClickListener(activity.getActivity(), true))
+                .setNegativeButton(R.string.dialog_two_factor_cancel, new RequestOnClickListener(activity.getActivity(), false))
                 .show()
                 ;
     }
 
     private void finishAll() {
-        new PlayStoreApiAuthenticator(activity.getApplicationContext()).logout();
+        new PlayStoreApiAuthenticator(activity.getActivity().getApplicationContext()).logout();
         GalaxyActivity.cascadeFinish();
-        activity.finish();
+        activity.getActivity().finish();
     }
 
     class RequestOnClickListener implements DialogInterface.OnClickListener {
@@ -128,7 +128,7 @@ public class Device extends List {
         private boolean askedAlready;
 
         public RequestOnClickListener(Activity activity, boolean logOut) {
-            askedAlready = PreferenceActivity.getBoolean(activity, PREFERENCE_DEVICE_DEFINITION_REQUESTED);
+            askedAlready = PreferenceFragment.getBoolean(activity, PREFERENCE_DEVICE_DEFINITION_REQUESTED);
             this.logOut = logOut;
         }
 

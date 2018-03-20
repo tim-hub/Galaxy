@@ -19,7 +19,7 @@ import in.dragons.galaxy.ContextUtil;
 import in.dragons.galaxy.CredentialsEmptyException;
 import in.dragons.galaxy.FirstLaunchChecker;
 import in.dragons.galaxy.PlayStoreApiAuthenticator;
-import in.dragons.galaxy.PreferenceActivity;
+import in.dragons.galaxy.PreferenceFragment;
 import in.dragons.galaxy.R;
 import in.dragons.galaxy.task.TaskWithProgress;
 
@@ -88,7 +88,7 @@ abstract public class PlayStoreTask<T> extends TaskWithProgress<T> {
                 ContextUtil.toast(context, R.string.first_login_message);
                 return;
             }
-        } else if (e.getCode() == 401 && PreferenceActivity.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)) {
+        } else if (e.getCode() == 401 && PreferenceFragment.getBoolean(context, PlayStoreApiAuthenticator.PREFERENCE_APP_PROVIDED_EMAIL)) {
             Log.i(getClass().getSimpleName(), "Token is stale");
             builder.refreshToken();
             return;

@@ -11,6 +11,6 @@ public class BootReceiver extends BroadcastReceiver {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             return;
         }
-        UpdateChecker.enable(context.getApplicationContext(), PreferenceActivity.getUpdateInterval(context));
+        UpdateChecker.enable(context.getApplicationContext(), PreferenceFragment.getUpdateInterval(context));
     }
 }

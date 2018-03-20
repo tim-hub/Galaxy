@@ -64,7 +64,7 @@ public class DetailsDownloadReceiver extends DownloadReceiver {
         buttonDownload.setVisibility(View.GONE);
         Button buttonInstall = (Button) activityRef.get().findViewById(R.id.install);
         buttonInstall.setVisibility(View.VISIBLE);
-        if (PreferenceActivity.getBoolean(context, PreferenceActivity.PREFERENCE_AUTO_INSTALL)
+        if (PreferenceFragment.getBoolean(context, PreferenceFragment.PREFERENCE_AUTO_INSTALL)
                 && !state.getTriggeredBy().equals(DownloadState.TriggeredBy.MANUAL_DOWNLOAD_BUTTON)
                 ) {
             buttonInstall.setEnabled(false);

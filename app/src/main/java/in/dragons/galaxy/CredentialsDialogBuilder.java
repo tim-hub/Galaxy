@@ -81,9 +81,9 @@ abstract public class CredentialsDialogBuilder {
             if (e instanceof TokenDispenserException) {
                 ContextUtil.toast(context, R.string.error_token_dispenser_problem);
             } else if (e instanceof GooglePlayException && ((GooglePlayException) e).getCode() == 500) {
-                PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceActivity.PREFERENCE_BACKGROUND_UPDATE_INTERVAL, "-1").commit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceFragment.PREFERENCE_BACKGROUND_UPDATE_INTERVAL, "-1").commit();
                 ContextUtil.toast(context, R.string.error_invalid_device_definition);
-                context.startActivity(new Intent(context, PreferenceActivity.class));
+                context.startActivity(new Intent(context, PreferenceFragment.class));
             }
         }
 
