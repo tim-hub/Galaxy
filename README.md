@@ -23,3 +23,7 @@ In **Galaxy** I will try my best to solve this issues, and provided a clean mate
 * [YalpStore](https://github.com/yeriomin/YalpStore)
 * [AppCrawler](https://github.com/Akdeniz/google-play-crawler)
 * [Raccoon](https://github.com/onyxbits/raccoon4/)
+
+## Download
+- [Release Chanle](https://github.com/whyorean/Galaxy/releases)
+
